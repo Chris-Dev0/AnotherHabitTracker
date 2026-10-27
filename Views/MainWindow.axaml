@@ -1,22 +1,46 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:AnotherHabitTracker.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AnotherHabitTracker.Views.MainWindow"
         x:DataType="vm:MainViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="AnotherHabitTracker">
+        Width="700"
+        Height="550"
+        Title="Habit Tracker">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainViewModel />
-    </Design.DataContext>
+    <StackPanel Margin="25" Spacing="14">
+        <TextBlock Text="Habit Tracker" FontSize="28" FontWeight="Bold"/>
+        <TextBlock Text="Manage your daily habits" FontSize="14"/>
+        <TextBlock Text="{Binding TodayLabel}" FontSize="13"/>
 
-    <TextBox Text="{Binding Greeting}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBox Width="360" Watermark="Enter habit name"
+                     Text="{Binding NewHabitName, Mode=TwoWay}"/>
+            <Button Content="Add Habit" Command="{Binding AddHabitCommand}"/>
+        </StackPanel>
 
+        <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" TextWrapping="Wrap"/>
+        <TextBlock Text="My Habits" FontSize="18" FontWeight="Bold"/>
+
+        <ListBox ItemsSource="{Binding HabitList}"
+                 SelectedItem="{Binding SelectedHabit, Mode=TwoWay}"
+                 Height="240">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:HabitRow">
+                    <StackPanel Orientation="Horizontal" Spacing="20">
+                        <TextBlock Text="{Binding Name}" Width="280"/>
+                        <TextBlock Text="{Binding TodayStatus}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <Button Content="Complete / Undo Selected"
+                    Command="{Binding ToggleCompletionCommand}"/>
+            <Button Content="Delete Selected Habit"
+                    Command="{Binding DeleteHabitCommand}"/>
+        </StackPanel>
+        <TextBlock Text="Changes are saved automatically to a local JSON file."
+                   FontSize="12"/>
+    </StackPanel>
 </Window>
